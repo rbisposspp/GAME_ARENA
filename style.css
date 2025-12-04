@@ -1,0 +1,865 @@
+/* ======================================== */
+/* DARK THEME & VARIABLES          */
+/* ======================================== */
+:root {
+    --header-height: 90px; /* Approximate height */
+    /* Dark Theme Palette (Tailwind Gray) */
+    --dark-bg-primary: #111827; /* Gray-900 */
+    --dark-bg-secondary: #1f2937; /* Gray-800 */
+    --dark-bg-tertiary: #374151; /* Gray-700 */
+    --light-text-primary: #f3f4f6; /* Gray-100 */
+    --light-text-secondary: #d1d5db; /* Gray-300 */
+    --medium-text-dark: #9ca3af; /* Gray-400 */
+    --border-color-dark: #4b5563; /* Gray-600 */
+
+    /* Accents (Example Palette) */
+    --accent-blue: #3b82f6; /* Blue-500 */
+    --accent-green: #22c55e; /* Green-500 */
+    --accent-red: #ef4444; /* Red-500 */
+    --accent-amber: #f59e0b; /* Amber-500 */
+    --accent-emerald: #10b981; /* Emerald-500 */
+    --accent-purple: #a855f7; /* Purple-500 */
+    --accent-sky: #0ea5e9; /* Sky-500 */
+
+     /* Feedback Backgrounds */
+    --feedback-bg-correct: #052e16; /* Dark Green (Green-900/950 area) */
+    --feedback-bg-incorrect: #450a0a; /* Dark Red (Red-900/950 area) */
+    --feedback-bg-partial: #422006; /* Dark Amber (Amber-900/950 area) */
+
+     /* Focus Outline */
+    --focus-ring-color: #60a5fa; /* Blue-400 */
+}
+
+/* ======================================== */
+/* BASE STYLES                 */
+/* ======================================== */
+body {
+    font-family: 'Inter', sans-serif; /* Using Inter font */
+    background-color: var(--dark-bg-primary);
+    color: var(--light-text-primary);
+    padding-top: var(--header-height); /* Add padding to prevent content from hiding under sticky header */
+    margin: 0; /* Ensure no default body margin */
+    line-height: 1.6; /* Improve readability */
+}
+
+/* ======================================== */
+/* KEYBOARD FOCUS STYLES          */
+/* ======================================== */
+/* Generic focus style for interactive elements */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex="0"]:focus-visible,
+label.custom-file-upload-label:focus-visible,
+.word-item:focus-visible { /* Add focus for clickable word items */
+    outline: 3px solid var(--focus-ring-color);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.4); /* Subtle glow */
+    border-radius: 4px; /* Match border-radius where applicable */
+}
+/* Remove default outline when focus is not visible (e.g., mouse click) */
+button:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+select:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible),
+[tabindex="0"]:focus:not(:focus-visible),
+label.custom-file-upload-label:focus:not(:focus-visible),
+.word-item:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+}
+/* Specific focus styles for text inputs, selects, textareas for visual consistency */
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+     outline: none; /* Remove default */
+     border-color: var(--accent-blue); /* Highlight border */
+     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4); /* Add subtle glow */
+}
+/* Ensure focus-visible takes precedence if needed */
+input[type="text"]:focus-visible,
+input[type="number"]:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+     /* Use the global focus-visible style defined above */
+     outline: 3px solid var(--focus-ring-color);
+     outline-offset: 2px;
+}
+
+
+/* ======================================== */
+/* GAME HEADER                */
+/* ======================================== */
+#game-header {
+    position: sticky; /* Make header sticky */
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--dark-bg-secondary);
+    padding: 0.5rem 1rem; /* Reduced padding slightly */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 100; /* Ensure header stays on top */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    gap: 0.5rem; /* Space between items */
+    border-bottom: 1px solid var(--border-color-dark);
+    min-height: var(--header-height); /* Ensure minimum height */
+    box-sizing: border-box; /* Include padding in height calculation */
+}
+
+/* Containers within the header */
+#game-controls, #turn-info, #teacher-controls, #scoreboard-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* Consistent gap */
+    flex-wrap: nowrap; /* Prevent internal wrapping */
+}
+
+/* Responsive Header Layout */
+/* Default: Teacher controls below */
+#teacher-controls { order: 3; flex-basis: 100%; justify-content: center; padding-top: 0.25rem; }
+#game-controls { order: 1; }
+#turn-info { order: 2; }
+#scoreboard-container { order: 4; }
+
+@media (min-width: 1024px) { /* Larger screens */
+     #teacher-controls { order: 3; flex-basis: auto; justify-content: flex-start; padding-top: 0;}
+     #scoreboard-container { order: 4; } /* Keep scoreboard last */
+}
+
+/* Turn Indicator Styling */
+#turn-indicator {
+     font-size: 0.9em;
+     font-weight: 600;
+     color: var(--light-text-secondary);
+     background-color: var(--dark-bg-tertiary);
+     padding: 5px 10px;
+     border-radius: 6px;
+     border: 1px solid var(--border-color-dark);
+     text-align: center;
+     white-space: normal; /* Allow text wrapping */
+     max-width: 320px; /* Prevent it from getting too wide */
+     min-height: 40px; /* Match button/input height */
+     display: flex; /* Center text vertically */
+     align-items: center;
+     justify-content: center;
+     line-height: 1.3; /* Adjust line height for wrapped text */
+}
+ #turn-indicator .active-team { color: var(--accent-blue); font-weight: 700; }
+ #turn-indicator .exercise-name { color: var(--accent-emerald); font-weight: 700; }
+ #turn-indicator .next-prompt { display: block; font-size: 0.9em; margin-top: 2px; color: var(--accent-red); }
+ #turn-indicator.teacher-mode { color: var(--light-text-primary); background-color: var(--dark-bg-tertiary); }
+
+
+/* Timer Display Styling */
+#global-timer-display {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--light-text-primary);
+    background-color: var(--accent-red); /* Use accent color for visibility */
+    padding: 5px 10px;
+    border-radius: 6px;
+    min-width: 130px; /* Ensure enough space */
+    text-align: center;
+}
+
+/* Scoreboard Styles */
+#scoreboard-container {
+     min-width: 160px; /* Minimum width */
+}
+#scoreboard-container h2 {
+    font-size: 0.9em; font-weight: 600; color: var(--light-text-secondary);
+    margin: 0 0 0.2rem 0; padding: 0; text-align: center;
+    border-bottom: none; /* Remove border from h2 */
+}
+#scoreboard-container table {
+    width: 100%; font-size: 0.8em; margin-top: 0; /* Remove top margin */
+    box-shadow: none; border-collapse: collapse;
+}
+#scoreboard-container th, #scoreboard-container td {
+    padding: 2px 5px; border: 1px solid var(--border-color-dark);
+    text-align: center; color: var(--light-text-primary);
+}
+#scoreboard-container th {
+    background-color: var(--dark-bg-tertiary); color: var(--light-text-primary);
+    font-weight: 600;
+}
+#scoreboard-container td {
+    font-weight: 700; color: var(--accent-sky); font-size: 1.1em; /* Make score stand out */
+}
+/* Highlight active team's score row */
+#scoreboard-container tr.active-score td {
+    background-color: #0c4a6e; /* Darker blue, e.g., Sky-800 */
+}
+/* Per-cell active highlight */
+#scoreboard-container td.active {
+    background-color: #0c4a6e; /* Darker blue, matches row style */
+}
+
+
+/* Teacher Mode Controls Styles */
+#teacher-mode-btn, #teacher-swap-set-btn { font-size: 0.8em; padding: 5px 10px; }
+#teacher-mode-btn { background-color: #475569; } /* Gray-600 */
+#teacher-mode-btn:hover:not(:disabled) { background-color: #52525b; } /* Gray-700 */
+#teacher-mode-btn.active { background-color: var(--accent-red); }
+#teacher-mode-btn.active:hover:not(:disabled) { background-color: #b91c1c; } /* Darker Red */
+#teacher-exercise-select {
+    font-size: 0.8em; padding: 4px 8px; border-radius: 6px;
+    border: 1px solid var(--border-color-dark);
+    background-color: var(--dark-bg-tertiary); color: var(--light-text-primary);
+    max-width: 200px; /* Limit width */
+}
+#teacher-swap-set-btn { background-color: var(--accent-purple); }
+#teacher-swap-set-btn:hover:not(:disabled) { background-color: #9333ea; } /* Darker Purple */
+
+
+/* ======================================== */
+/* OVERLAYS                    */
+/* ======================================== */
+/* Base style for all overlays (Setup, Pause, End Game) */
+.overlay-style {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(17, 24, 39, 0.95); /* --dark-bg-primary slightly more opaque */
+    z-index: 200; /* High z-index to cover everything */
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--light-text-primary);
+    padding: 1rem; /* Padding around content */
+    box-sizing: border-box;
+}
+
+/* Setup Overlay Box */
+#setup-box {
+     background-color: var(--dark-bg-secondary);
+     padding: 2rem;
+     border-radius: 8px;
+     border: 1px solid var(--border-color-dark);
+     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+     max-width: 90%; /* Responsive width */
+     width: 600px; /* Max width */
+     max-height: 90vh; /* Limit height */
+     overflow-y: auto; /* Allow scrolling if content exceeds height */
+}
+#setup-box h2 { font-size: 1.5em; margin-top: 0; margin-bottom: 1.5rem; padding-bottom: 0; border-bottom: none; }
+.input-group { margin-bottom: 1rem; text-align: left; }
+.input-group label { display: block; margin-bottom: 0.3rem; font-weight: 500; font-size: 0.9em; color: var(--light-text-secondary); }
+/* Ensure inputs take full width of their group */
+.input-group input[type="text"] { width: 100%; box-sizing: border-box; }
+#setup-buttons { text-align: center; margin-top: 1.5rem; }
+
+/* Pause Overlay Text */
+#pause-overlay p { font-size: 2em; font-weight: bold; }
+
+/* End Game Overlay Box */
+#end-game-box {
+    background-color: var(--dark-bg-secondary);
+    padding: 2rem 3rem; /* More padding */
+    border-radius: 12px; /* More rounded corners */
+    border: 1px solid var(--border-color-dark);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    max-width: 90%;
+    width: 500px;
+}
+#end-game-title { font-size: 2.5em; font-weight: 700; color: var(--accent-blue); margin-bottom: 1rem; }
+#end-game-reason { font-size: 1.1em; color: var(--light-text-secondary); margin-bottom: 0.5rem; }
+#end-game-score { font-size: 1.4em; font-weight: 600; margin-bottom: 2rem; }
+#play-again-btn { background-color: var(--accent-green); font-size: 1.2em; padding: 12px 25px; margin-top: 0; }
+#play-again-btn:hover:not(:disabled) { background-color: #15803d; } /* Darker Green */
+
+/* ======================================== */
+/* MAIN CONTENT & TITLES           */
+/* ======================================== */
+.main-container {
+    max-width: 900px; /* Max width for main content */
+    margin: 1rem auto 2rem auto; /* Center content */
+    padding: 1rem;
+    box-sizing: border-box;
+}
+/* Exercises container - display managed by JS */
+#exercises-container { /* Display set by JS logic */ }
+
+/* Titles Styling */
+h1 { /* Main title - English Challenge Arena */
+     color: var(--light-text-primary);
+     text-align: center;
+     margin-bottom: 2.5rem;
+     font-weight: 700;
+     font-size: 1.875rem; /* text-3xl equivalent */
+}
+h2 { /* Exercise titles, Setup/End Game titles */
+    color: var(--light-text-primary);
+    border-bottom: 2px solid var(--border-color-dark);
+    padding-bottom: 0.5rem;
+    margin: 0 0 1.5rem 0; /* Reset top margin, add bottom margin */
+    font-size: 1.25rem; /* text-xl equivalent */
+    font-weight: 600;
+}
+h3 { /* Sub-titles (e.g., Custom Picture Dictionary section) */
+     color: var(--light-text-secondary);
+     margin: 0 0 0.75rem 0; /* Reset top margin, add bottom margin */
+     font-weight: 600;
+     font-size: 1.1em;
+}
+h4 { /* Further sub-titles if needed (like word bank/category titles) */
+     color: var(--light-text-primary);
+     margin: 0 0 0.75rem 0; /* Reset top margin, add bottom margin */
+     font-weight: 500; /* Slightly less bold than h3 */
+     font-size: 1em;
+}
+
+/* ======================================== */
+/* EXERCISE CONTAINER STYLES       */
+/* ======================================== */
+.exercise {
+    background-color: var(--dark-bg-secondary);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 12px; /* Softer corners */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color-dark);
+    border-left: 5px solid transparent; /* Initial transparent border for potential active state */
+    transition: opacity 0.3s ease-in-out; /* Smooth transition for disabling */
+}
+/* Style for disabled/inactive exercises */
+.exercise.exercise-disabled {
+     opacity: 0.6;
+     /* pointer-events: none; /* Let JS handle disabling specific elements for better control */
+}
+
+/* ======================================== */
+/* FORMS, INPUTS, SELECTS           */
+/* ======================================== */
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    border: 2px solid var(--border-color-dark);
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin: 4px; /* Default margin, can be overridden where needed */
+    background-color: var(--dark-bg-tertiary);
+    color: var(--light-text-primary);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-size: 1em; /* Ensure consistent font size */
+    min-height: 40px; /* Ensure minimum height for easier clicking/tapping */
+    box-sizing: border-box; /* Include padding/border in element's total size */
+}
+/* Input disabled state - use !important cautiously if needed */
+input:disabled,
+select:disabled,
+textarea:disabled,
+button:disabled {
+     background-color: #4b5563 !important; /* Gray-600 */
+     cursor: not-allowed !important;
+     opacity: 0.6 !important;
+     border-color: #4b5563 !important;
+     color: var(--medium-text-dark) !important;
+}
+/* Keep text cursor for disabled text inputs for visual consistency */
+input[type="text"]:disabled,
+textarea:disabled {
+    /* Keep default text cursor, but it won't be active */
+     cursor: not-allowed !important; /* Override default text cursor */
+}
+/* Style specifically for disabled selects to make them look clearly disabled */
+select:disabled {
+     /* Remove dropdown arrow for disabled selects */
+     background-image: none !important;
+     opacity: 0.5 !important;
+}
+
+
+/* ======================================== */
+/* FEEDBACK STYLES (UPDATED FOR SPECIFICITY) */
+/* ======================================== */
+/* General feedback styles applied to inputs, selects, containers, etc. */
+/* Use !important cautiously, only if necessary to override other styles */
+
+/* Targeting inputs/selects/textareas directly within an .exercise container */
+.exercise input.correct,
+.exercise select.correct,
+.exercise textarea.correct {
+    border-color: var(--accent-green) !important;
+    background-color: var(--feedback-bg-correct) !important;
+    color: var(--light-text-primary) !important;
+}
+.exercise input.incorrect,
+.exercise select.incorrect,
+.exercise textarea.incorrect {
+    border-color: var(--accent-red) !important;
+    background-color: var(--feedback-bg-incorrect) !important;
+    color: var(--light-text-primary) !important;
+}
+
+/* Optional: Specific feedback for other elements like containers if needed */
+.picture-item-container.correct {
+    border-color: var(--accent-green) !important;
+}
+.picture-item-container.incorrect {
+     border-color: var(--accent-red) !important;
+}
+
+/* Specific feedback styling for drop zones if needed */
+.drop-zone.correct { /* This seems unused, but keeping for potential future use */
+    border-color: var(--accent-green) !important;
+    background-color: #064e3b !important; /* Example: Darker Green */
+}
+.drop-zone.incorrect { /* This seems unused, but keeping for potential future use */
+    border-color: var(--accent-red) !important;
+    background-color: #7f1d1d !important; /* Example: Darker Red */
+}
+/* Note: The generic .partial class remains as defined before if needed */
+.partial {
+    border-color: var(--accent-amber) !important;
+    background-color: var(--feedback-bg-partial) !important;
+    color: var(--light-text-primary) !important;
+}
+
+/* ======================================== */
+/* BUTTONS                  */
+/* ======================================== */
+button {
+    background-color: var(--accent-blue);
+    color: #ffffff; /* White text on buttons */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    font-weight: 600;
+    margin-top: 10px; /* Default top margin */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    min-height: 40px; /* Match input height */
+    box-sizing: border-box;
+    display: inline-flex; /* Align text and potential icons */
+    align-items: center;
+    justify-content: center;
+}
+button:hover:not(:disabled) {
+    background-color: #1d4ed8; /* Darker Blue */
+}
+button:active:not(:disabled) {
+    transform: translateY(1px); /* Subtle press effect */
+}
+/* Disabled state handled globally */
+
+/* Specific Button Styles */
+#start-new-game-btn { background-color: var(--accent-green); }
+#start-new-game-btn:hover:not(:disabled) { background-color: #15803d; } /* Darker Green */
+
+#pause-resume-btn { background-color: var(--accent-amber); }
+#pause-resume-btn:hover:not(:disabled) { background-color: #d97706; } /* Darker Amber */
+#pause-resume-btn.paused { background-color: var(--accent-green); } /* Green when paused (shows RESUME) */
+#pause-resume-btn.paused:hover:not(:disabled) { background-color: #15803d; }
+
+/* General class for next/submit buttons within exercises if needed */
+.next-turn-btn { /* Class for the global next turn button */
+    background-color: var(--accent-emerald);
+}
+.next-turn-btn:hover:not(:disabled) { background-color: #047857; } /* Darker Emerald */
+
+#add-sentence-btn { /* Example from Sentence Builder concept */
+    background-color: var(--accent-sky);
+    font-size: 0.9em;
+    padding: 8px 15px;
+}
+#add-sentence-btn:hover:not(:disabled) { background-color: #0284c7; } /* Darker Sky */
+
+/* Clear Custom Items Button */
+#clear-custom-items-btn {
+    background-color: var(--accent-red);
+    font-size: 0.8em;
+    padding: 4px 8px;
+    margin-top: 0.5rem;
+    min-height: auto; /* Override default min-height */
+}
+#clear-custom-items-btn:hover:not(:disabled) {
+    background-color: #b91c1c; /* Darker red */
+}
+
+
+/* ======================================== */
+/* HINTS                    */
+/* ======================================== */
+.hint {
+    font-size: 0.85em;
+    color: var(--light-text-secondary);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    margin-left: 8px;
+    display: inline-block; /* Allow margin */
+    border-radius: 4px;
+    padding: 2px 4px; /* Add some padding */
+    transition: color 0.2s, background-color 0.2s;
+    vertical-align: middle; /* Align nicely with text/inputs */
+}
+.hint:hover {
+    color: var(--light-text-primary);
+    background-color: var(--dark-bg-tertiary); /* Subtle background on hover */
+}
+/* Focus handled by global :focus-visible */
+
+
+/* ======================================== */
+/* MESSAGE BOX                 */
+/* ======================================== */
+#message-box {
+    position: fixed; /* Position relative to viewport */
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+    color: white;
+    padding: 12px 25px; /* Comfortable padding */
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1001; /* Above overlays */
+    display: none; /* Initially hidden */
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, background-color 0.3s;
+    font-weight: 500;
+    text-align: center;
+    max-width: 90%; /* Prevent overflow on small screens */
+    pointer-events: none; /* Prevent interaction with the message */
+}
+#message-box.show { display: block; opacity: 1; }
+#message-box.info { background-color: #0369a1; } /* Sky-700 */
+#message-box.success { background-color: #15803d; } /* Green-700 */
+#message-box.error { background-color: #b91c1c; } /* Red-700 */
+
+
+/* ======================================== */
+/* TABLES (For TableFill Exercise etc.) */
+/* ======================================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for tables */
+}
+th, td {
+    border: 1px solid var(--border-color-dark);
+    padding: 10px 12px; /* Good padding */
+    text-align: left;
+    vertical-align: middle; /* Align content vertically */
+}
+th {
+    background-color: var(--dark-bg-tertiary);
+    font-weight: 600;
+    color: var(--light-text-secondary);
+}
+/* Make input fill cell better in tables */
+td input[type="text"] {
+    width: calc(100% - 10px); /* Fill cell width minus some padding */
+    margin: 0; /* Reset margin */
+    display: block; /* Ensure it takes block space */
+    padding: 6px 8px; /* Adjust padding for table context */
+    min-height: auto; /* Override default min-height */
+}
+
+
+/* ======================================== */
+/* SPECIFIC EXERCISE STYLES         */
+/* ======================================== */
+/* Word Scramble - Align baseline for better text/input flow */
+#exercise-1A ol li { align-items: baseline; }
+
+/* Matching */
+/* No specific global styles needed, handled by element styles in render */
+
+/* Styling for Fill In Exercise Image (Added for exercise 3D) */
+.fill-in-image {
+    max-width: 90%; /* Adjust as needed */
+    max-height: 350px; /* Limit max height */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 8px;
+    border: 1px solid var(--border-color-dark);
+    display: block; /* Center using margin auto */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* ======================================== */
+/* CUSTOM FILE UPLOAD STYLES        */
+/* ======================================== */
+.custom-file-upload-label {
+    display: inline-block; /* Treat like a button */
+    padding: 8px 15px;
+    cursor: pointer;
+    background-color: var(--accent-sky);
+    color: white;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    font-size: 0.9em;
+}
+.custom-file-upload-label:hover { background-color: #0284c7; } /* Darker Sky */
+#custom-items-area {
+    margin-top: 1rem;
+    max-height: 200px; /* Limit height and make scrollable */
+    overflow-y: auto;
+    border: 1px dashed var(--border-color-dark);
+    padding: 0.5rem;
+    border-radius: 6px;
+    background-color: var(--dark-bg-primary); /* Slightly different bg */
+}
+/* Preview item styles */
+#custom-items-area .custom-item-preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--dark-bg-tertiary);
+    padding-bottom: 8px;
+}
+#custom-items-area .custom-item-preview:last-child {
+    border-bottom: none; margin-bottom: 0; padding-bottom: 0;
+}
+#custom-items-area .custom-item-preview img {
+    width: 50px; height: 50px; object-fit: cover; border-radius: 4px;
+    border: 1px solid var(--border-color-dark);
+    flex-shrink: 0; /* Prevent image from shrinking */
+}
+#custom-items-area .custom-item-preview input[type="text"] {
+    flex-grow: 1; /* Allow input to take remaining space */
+    margin: 0 !important; /* Override default input margins */
+    height: 40px; /* Match general input height */
+    padding: 8px 12px;
+    box-sizing: border-box;
+}
+
+/* ======================================== */
+/* OPPOSITES MATCHING STYLES        */
+/* ======================================== */
+.opposites-matching-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap; /* Allow columns to wrap */
+}
+.opposites-column {
+    flex: 1; /* Each column tries to take equal space */
+    min-width: 150px; /* Minimum width before wrapping */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid var(--dark-bg-tertiary);
+    border-radius: 8px;
+}
+.word-item {
+    padding: 8px 12px;
+    background-color: var(--dark-bg-tertiary);
+    border: 2px solid var(--border-color-dark);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+    font-weight: 500;
+    user-select: none; /* Prevent text selection */
+}
+/* Hover effect only for non-matched items */
+.word-item:not(.matched):hover {
+    background-color: var(--dark-bg-secondary);
+    border-color: var(--medium-text-dark);
+}
+/* Selected state */
+.word-item.selected {
+    border-color: var(--accent-blue) !important; /* Use !important if necessary */
+    background-color: #1e40af !important; /* Darker blue for selection */
+    color: white;
+    transform: scale(1.02); /* Slight scale effect */
+}
+/* Matched state */
+.word-item.matched {
+    border-color: var(--accent-green) !important;
+    background-color: var(--feedback-bg-correct) !important;
+    color: var(--light-text-secondary); /* Dim text slightly */
+    cursor: not-allowed;
+    opacity: 0.7;
+    pointer-events: none; /* Make non-interactive */
+}
+/* Incorrect flash animation */
+.word-item.incorrect-flash {
+    border-color: var(--accent-red) !important;
+    background-color: var(--feedback-bg-incorrect) !important;
+    color: white !important; /* Ensure text is visible */
+    animation: flash-red 0.5s ease-in-out;
+}
+@keyframes flash-red {
+    0%, 100% {
+        background-color: var(--feedback-bg-incorrect);
+        border-color: var(--accent-red);
+    }
+    50% { /* Mid-animation, return to base style briefly */
+        background-color: var(--dark-bg-tertiary);
+        border-color: var(--border-color-dark);
+    }
+}
+
+/* ======================================== */
+/* DRAG & DROP CATEGORIZE STYLES      */
+/* ======================================== */
+.drag-drop-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+.word-bank {
+    border: 1px dashed var(--border-color-dark);
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: var(--dark-bg-primary); /* Slightly different bg */
+    display: flex;
+    flex-wrap: wrap; /* Allow words to wrap */
+    gap: 0.75rem;
+    min-height: 50px; /* Ensure minimum height */
+    align-items: center; /* Align items vertically */
+}
+.word-bank h4 {
+    width: 100%; /* Title takes full width */
+    margin: 0 0 0.5rem 0;
+    color: var(--medium-text-dark);
+    font-size: 0.9em;
+    border-bottom: 1px solid var(--dark-bg-tertiary);
+    padding-bottom: 0.25rem;
+    font-weight: normal;
+}
+.draggable-word {
+    padding: 6px 12px;
+    background-color: var(--dark-bg-tertiary);
+    border: 1px solid var(--border-color-dark);
+    border-radius: 15px; /* Pill shape */
+    cursor: grab; /* Indicate draggable */
+    transition: opacity 0.2s, background-color 0.2s;
+    font-weight: 500;
+    user-select: none; /* Prevent text selection */
+    touch-action: none; /* Improve touch interaction */
+}
+.draggable-word:active { cursor: grabbing; } /* Feedback while dragging */
+.draggable-word.dragging {
+    opacity: 0.5; /* Make semi-transparent while dragging */
+    background-color: var(--accent-blue); /* Change color */
+}
+.draggable-word.placed {
+    cursor: default; /* Not interactive once placed */
+    background-color: var(--dark-bg-secondary); /* Different bg color */
+    border-color: transparent;
+    opacity: 0.8;
+    margin-bottom: 0.25rem; /* Add margin below placed items */
+    pointer-events: none; /* Disable further interaction */
+}
+.category-zones-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+    flex-wrap: wrap; /* Allow zones to wrap */
+}
+.category-drop-zone {
+    flex: 1; /* Try to take equal space */
+    min-width: 200px;
+    min-height: 150px;
+    border: 2px dashed var(--border-color-dark);
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: var(--dark-bg-secondary);
+    transition: background-color 0.2s, border-color 0.2s;
+    display: flex;
+    flex-direction: column; /* Stack title and list */
+}
+.category-drop-zone h4 {
+    margin: 0 0 0.75rem 0;
+    text-align: center;
+    color: var(--light-text-secondary);
+    font-size: 1em;
+    border-bottom: 1px solid var(--dark-bg-tertiary);
+    padding-bottom: 0.5rem;
+}
+.category-drop-zone .dropped-items-list {
+    flex-grow: 1; /* Allow list to fill space */
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem; /* Space between dropped items */
+    min-height: 50px; /* Ensure some height */
+}
+/* Feedback when dragging over a zone */
+.category-drop-zone.drag-over {
+    background-color: var(--dark-bg-tertiary);
+    border-color: var(--accent-sky);
+    border-style: solid;
+}
+/* Feedback for incorrect drop attempt */
+.category-drop-zone.drop-incorrect {
+    animation: shake 0.3s ease-in-out;
+    border-color: var(--accent-red); /* Highlight border red */
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* ======================================== */
+/* PICTURE DICTIONARY STYLES (NEW)    */
+/* ======================================== */
+/* Container for the grid of pictures/inputs */
+.picture-dictionary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive grid */
+    gap: 1rem;
+    margin-top: 1rem;
+}
+/* Individual item container */
+.picture-item-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.75rem; /* Slightly more padding */
+    border: 1px solid var(--dark-bg-tertiary);
+    border-radius: 8px;
+    background-color: var(--dark-bg-primary); /* Slightly different background */
+    transition: border-color 0.3s; /* Smooth transition for feedback */
+}
+/* Image styling */
+.picture-item-container img {
+    width: 100%; /* Fill container width */
+    max-width: 120px; /* Max width */
+    height: 120px; /* Fixed height */
+    object-fit: contain; /* Show whole image, use letterboxing if needed */
+    margin-bottom: 0.75rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-color-dark);
+    background-color: #fff; /* Add white background for transparent images */
+}
+/* Input field styling */
+.picture-item-container input[type="text"] {
+    width: 100%; /* Full width within container */
+    margin: 0 !important; /* Remove default margins */
+    text-align: center; /* Center the text */
+}
+/* Feedback styling on the item container (Used by Picture Dictionary) */
+.picture-item-container.correct {
+    border-color: var(--accent-green) !important;
+}
+.picture-item-container.incorrect {
+     border-color: var(--accent-red) !important;
+}
+
+
+/* ======================================== */
+/* MEDIA QUERIES               */
+/* ======================================== */
+/* Smaller tablets and large phones */
+@media (max-width: 768px) {
+    #game-header {
+        justify-content: space-around; /* Better spacing on smaller screens */
+        gap: 0.5rem; /* Reduce gap */

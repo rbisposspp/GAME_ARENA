@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Challenge Arena (Turn-Based) - State & Names</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="game-setup" class="overlay-style" style="display: flex;">
+        <div id="setup-box">
+            <h2>Game Setup</h2>
+
+            <div class="input-group">
+                <label for="team1-name-input">Team 1 Name:</label>
+                <input type="text" id="team1-name-input" value="Team 1">
+            </div>
+            <div class="input-group">
+                <label for="team2-name-input">Team 2 Name:</label>
+                <input type="text" id="team2-name-input" value="Team 2">
+            </div>
+
+            <div class="input-group">
+                <label for="players-per-team-select">Players per Team (1–4):</label>
+                <select id="players-per-team-select">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="round-duration-input">Round Duration (minutes):</label>
+                <input type="number" id="round-duration-input" value="15" min="1" max="60">
+                <p style="font-size: 0.8em; color: var(--medium-text-dark); margin-top: 0.25rem;">Tip: choose 5–30 depending on level.</p>
+            </div>
+
+            <div class="input-group" id="team1-players-container">
+                <!-- Team 1 player inputs will be generated here -->
+            </div>
+            <div class="input-group" id="team2-players-container">
+                <!-- Team 2 player inputs will be generated here -->
+            </div>
+
+            <hr style="border-color: var(--border-color-dark); margin: 1.5rem 0;">
+
+            <div id="custom-picture-section">
+                <h3 style="font-size: 1.1em; margin-bottom: 0.75rem; color: var(--light-text-secondary);">Custom Picture Dictionary <span style="font-size: 0.8em; color: var(--medium-text-dark);">(Optional - Replaces Exercise 4A)</span></h3>
+
+                <div class="input-group">
+                     <label for="custom-image-input" class="custom-file-upload-label">
+                         Select Images...
+                     </label>
+                    <input type="file" id="custom-image-input" accept="image/*" multiple style="display: none;">
+                    <p style="font-size: 0.8em; color: var(--medium-text-dark); margin-top: 0.25rem;">Select one or more image files (jpg, png, gif, webp...).</p>
+                 </div>
+
+                <div id="custom-items-area" style="margin-top: 1rem; max-height: 200px; overflow-y: auto; border: 1px dashed var(--border-color-dark); padding: 0.5rem; border-radius: 6px; background-color: var(--dark-bg-primary);">
+                    <p style="font-size: 0.9em; color: var(--medium-text-dark); text-align: center;">Selected image previews and answer fields will appear here...</p>
+                    </div>
+                 <button type="button" id="clear-custom-items-btn" style="font-size: 0.8em; padding: 4px 8px; margin-top: 0.5rem; background-color: var(--accent-red); display: none;">Clear Custom Items</button>
+            </div>
+             <hr style="border-color: var(--border-color-dark); margin: 1.5rem 0;">
+
+            <div id="setup-buttons">
+                <button id="start-new-game-btn">Start New Game</button>
+            </div>
+
+            <p id="resume-info" style="font-size: 0.8em; margin-top: 1rem; color: var(--medium-text-dark);"></p>
+
+        </div>
+    </div>
+
+    <div id="main-game-interface" style="display: none;">
+        <header id="game-header" role="banner">
+            <div id="game-controls">
+                <button id="pause-resume-btn">PAUSE</button>
+                <div id="global-timer-display" aria-live="polite">Time: 15:00</div>
+            </div>
+            <div id="turn-info">
+                 <p id="turn-indicator" aria-live="polite">Waiting...</p>
+            </div>
+            
+            <div id="scoreboard-container" role="region" aria-labelledby="scoreboard-title">
+                 <h2 id="scoreboard-title">Scoreboard</h2>
+                 <table>
+                     <thead>
+                         <tr>
+                             <th id="scoreboard-th-t1">Team 1</th>
+                             <th id="scoreboard-th-t2">Team 2</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         <tr><td id="team1-score">0</td><td id="team2-score">0</td></tr>
+                     </tbody>
+                 </table>
+            </div>
+        </header>
+
+        <div id="pause-overlay" role="alert" class="overlay-style"><p>GAME PAUSED</p></div>
+
+        <div id="end-game-overlay" class="overlay-style">
+            <div id="end-game-box">
+                <h2 id="end-game-title">Game Over!</h2>
+                <p id="end-game-reason"></p>
+                <p id="end-game-score"></p>
+                 <button id="play-again-btn">Play Again?</button>
+            </div>
+        </div>
+
+        <main class="main-container">
+            <h1 class="text-3xl font-bold text-center text-slate-100">English Challenge Arena</h1>
+            <div id="message-box" aria-live="polite" role="status">Message Area</div>
+
+            <div id="exercises-container">
+                </div>
+        </main>
+
+        <div id="global-next-turn-area" style="text-align: center; margin: 20px 0; display: none;">
+            </div>
+
+        <div id="svg-definitions-container" style="display:none">
+            <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; width: 0; height: 0; overflow: hidden;">
+                <defs>
+                    <symbol id="family-tree-simpsons" viewBox="0 0 400 300">
+                        <title>Simpsons Family Tree</title>
+                        <rect x="10" y="10" width="380" height="280" fill="none" stroke="currentColor"/>
+                        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="16" fill="currentColor">
+                            Placeholder: Simpsons Tree SVG
+                        </text>
+                        </symbol>
+
+                    <symbol id="family-tree-smiths" viewBox="0 0 400 300">
+                         <title>Smiths Family Tree</title>
+                         <rect x="10" y="10" width="380" height="280" fill="none" stroke="currentColor"/>
+                        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="16" fill="currentColor">
+                            Placeholder: Smiths Tree SVG
+                        </text>
+                         </symbol>
+                </defs>
+            </svg>
+            </div>
+
+    </div> <script src="exerciseData.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>
